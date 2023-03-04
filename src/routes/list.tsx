@@ -23,7 +23,7 @@ export default function ListPage() {
   const [earliestInscription, setEarliestInscription] =
     React.useState<number>();
 
-  const [value, copy] = useCopyToClipboard();
+  const [, copy] = useCopyToClipboard();
 
   const loadMoreRows = React.useCallback(async () => {
     if (!loading) {
@@ -49,7 +49,7 @@ export default function ListPage() {
       loadMoreRows();
       setInited(true);
     }
-  }, [inited]);
+  }, [inited, loadMoreRows]);
 
   const isItemLoaded = (index: number) => (data ? index < data.length : false);
 

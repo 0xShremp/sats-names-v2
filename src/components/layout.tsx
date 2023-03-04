@@ -48,8 +48,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="flex w-full min-h-screen bg-gray-100">
       <div className="flex flex-col flex-grow h-full min-h-screen container-7xl md:flex-row">
-        <header className="flex flex-row justify-between flex-shrink-0 w-full pt-4 space-x-4 md:w-16 md:flex-col md:justify-start md:space-x-0 md:space-y-4 md:border-b md:py-6">
-          <Link to="/">
+        <header className="flex flex-row justify-between flex-shrink-0 w-full pt-4 space-x-3 md:w-16 md:flex-col md:justify-start md:space-x-0 md:space-y-4 md:border-b md:py-6">
+          <Link to="/" className="shrink-0">
             <img
               src={logo}
               alt="Sats Names"
@@ -59,19 +59,21 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               Sats Names
             </h1>
           </Link>
-          <nav className="flex flex-row items-center justify-center space-x-3 md:flex-col md:space-y-2 md:space-x-0">
+          <nav className="flex flex-row items-center justify-center md:flex-col md:space-y-2 md:space-x-0">
             {navData.map((navItem) => (
               <NavLink
                 key={navItem.id}
                 to={navItem.target}
                 className={({ isActive }) =>
                   classNames([
-                    "flex flex-row items-center justify-center space-x-1.5 rounded-lg bg-white p-2 text-sm",
+                    "flex flex-row items-center justify-center space-x-1 bg-white p-2 text-sm",
                     "md:h-16 md:w-16 md:flex-col md:space-y-1 md:space-x-0 md:rounded-xl md:p-6",
                     "border border-indigo-100 hover:border-indigo-200",
                     "transition-colors",
+                    "first-of-type:rounded-l-lg -mr-px",
+                    "last-of-type:rounded-r-lg",
                     {
-                      "!border-indigo-500": isActive,
+                      "!border-indigo-500 z-10": isActive,
                     },
                   ])
                 }
@@ -79,7 +81,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="text-gray-500">
                   {<navItem.icon className="w-5 h-5 md:h-6 md:w-6" />}
                 </div>
-                <div className="text-gray-700 md:text-xs">{navItem.title}</div>
+                <div className="text-xs text-gray-700 md:text-xs">
+                  {navItem.title}
+                </div>
               </NavLink>
             ))}
           </nav>

@@ -1,0 +1,22 @@
+{
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.wordWrapColumn": 85,
+    "prettier.tabWidth": 2,
+    "[typescript]": {
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+      }
+    },
+    "[typescriptreact]": {
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+      }
+    },
+    "[mdx]": {
+      "editor.wordWrap": "wordWrapColumn",
+      "editor.formatOnSave": false
+    },
+    "css.validate": false
+  }
+  

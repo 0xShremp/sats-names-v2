@@ -1,4 +1,4 @@
-import { Form, Formik } from "formik";
+import { Field, Form, Formik } from "formik";
 import React from "react";
 import { fetchSatsName } from "../loaders/sats-names";
 import { type SatsName } from "./list";
@@ -15,18 +15,6 @@ export type SearchDataType = {
   };
 };
 
-// export async function action({ request }: ActionArgs) {
-//   let formData = await request.formData();
-
-//   const term = formData.get("search");
-
-//   if (data.error) {
-//     return json({ type: "error", data: data.error }, 400);
-//   } else {
-//     return json({ type: "data", data } as ActionReturnType, 200);
-//   }
-// }
-
 export default function SearchPage() {
   const [loading, setLoading] = React.useState(false);
   const [actionData, setActionData] = React.useState<SearchDataType>();
@@ -34,18 +22,31 @@ export default function SearchPage() {
   const handleSubmit = React.useCallback(async (values: any) => {
     setLoading(true);
 
-    console.log("values", values);
-
-    if (!values) {
+    if (!values.search) {
       setActionData({
-        error: "Please fill the form before submitting.",
+        error: "Please fill the form field before submitting.",
       });
+      return;
     }
 
-    const response = await fetchSatsName();
+    const response = await fetchSatsName(values.search);
+
+    setLoading(false);
+
+    if (response.status === 500) {
+      setActionData({
+        error: "API is busy, wait abit.",
+      });
+      return;
+    }
+
     const data = await response.json();
 
-    if (data) {
+    if (data.error) {
+      setActionData({
+        error: data.error,
+      });
+    } else {
       setActionData({
         data,
       });
@@ -63,7 +64,7 @@ export default function SearchPage() {
             Search for a sats name
           </label>
           <div className="flex w-full">
-            <input
+            <Field
               id="search"
               name="search"
               type="text"
@@ -73,7 +74,7 @@ export default function SearchPage() {
             <button
               className="px-4 text-white bg-indigo-500 rounded-r-lg md:px-6"
               type="submit"
-              onClick={handleSubmit}
+              // onClick={handleSubmit}
             >
               Submit
             </button>
@@ -83,10 +84,10 @@ export default function SearchPage() {
       {loading && (
         <div className="w-full py-6 text-center animate-pulse">Loading ...</div>
       )}
-      {actionData && actionData.error && (
+      {!loading && actionData && actionData.error && (
         <p className="mt-2 ml-1 text-sm text-red-500">{actionData.error}</p>
       )}
-      {actionData && actionData.data && (
+      {!loading && actionData && actionData.data && (
         <div className="space-y-2 break-words rounded-lg sm:space-y-1 md:border md:p-6">
           <div className="mb-2 text-lg font-bold">{actionData.data.name}</div>
           <div className="flex flex-col w-full sm:flex-row">
@@ -140,24 +141,25 @@ export default function SearchPage() {
             <div className="w-full pt-1 mb-2 text-xs font-bold text-gray-500 uppercase">
               Inscriptions
             </div>
-            {actionData.data.inscriptions.map(
-              (i: Omit<SatsName, "name, owner">) => (
-                <div className="w-full" key={i.inscriptionId}>
-                  <div className="flex flex-col w-full sm:flex-row">
-                    <div className="pt-1 text-xs font-bold text-gray-500 uppercase sm:w-1/3">
-                      Inscription Index
+            {actionData.data.inscriptions &&
+              actionData.data.inscriptions.map(
+                (i: Omit<SatsName, "name, owner">) => (
+                  <div className="w-full" key={i.inscriptionId}>
+                    <div className="flex flex-col w-full sm:flex-row">
+                      <div className="pt-1 text-xs font-bold text-gray-500 uppercase sm:w-1/3">
+                        Inscription Index
+                      </div>
+                      <div className="sm:w-2/3">{i.inscriptionIndex}</div>
                     </div>
-                    <div className="sm:w-2/3">{i.inscriptionIndex}</div>
-                  </div>
-                  <div className="flex flex-col w-full sm:flex-row">
-                    <div className="pt-1 text-xs font-bold text-gray-500 uppercase sm:w-1/3">
-                      Inscription Id
+                    <div className="flex flex-col w-full sm:flex-row">
+                      <div className="pt-1 text-xs font-bold text-gray-500 uppercase sm:w-1/3">
+                        Inscription Id
+                      </div>
+                      <div className="sm:w-2/3">{i.inscriptionId}</div>
                     </div>
-                    <div className="sm:w-2/3">{i.inscriptionId}</div>
                   </div>
-                </div>
-              )
-            )}
+                )
+              )}
           </div>
         </div>
       )}

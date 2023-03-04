@@ -131,7 +131,7 @@ export default function ListPage() {
         </InfiniteLoader>
       </div>
       {loading && (
-        <div className="absolute z-50 px-4 py-2 text-indigo-400 -translate-x-1/2 rounded-full bottom-12 left-1/2 bg-indigo-50">
+        <div className="animate-pulse absolute z-50 px-4 py-2 text-indigo-400 -translate-x-1/2 rounded-full bottom-12 left-1/2 bg-indigo-50">
           Loading ...
         </div>
       )}

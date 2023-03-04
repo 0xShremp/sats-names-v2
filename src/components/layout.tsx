@@ -1,9 +1,10 @@
-import { NavLink } from "react-router-dom";
 import classNames from "classnames";
 import React from "react";
+import { Link, NavLink, Outlet } from "react-router-dom";
 import IconCheck from "../icons/check";
 import IconList, { type IconProps } from "../icons/list";
 import IconSearch from "../icons/search";
+import IconWand from "../icons/wand";
 import logo from "../images/logo.jpg";
 import ResponsiveSizes from "./responsive-sizes";
 
@@ -17,6 +18,12 @@ const navData: {
   target: string;
   icon: React.FC<IconProps>;
 }[] = [
+  {
+    id: "5A8D11E1-0530-4E95-A26E-7502BEC122AB",
+    title: "About",
+    target: "/about",
+    icon: IconWand,
+  },
   {
     id: "7E9E6873-E010-4C39-92AE-71D8FBC55C28",
     title: "List",
@@ -42,7 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="flex w-full min-h-screen bg-gray-100">
       <div className="flex flex-col flex-grow h-full min-h-screen container-7xl md:flex-row">
         <header className="flex flex-row justify-between flex-shrink-0 w-full pt-4 space-x-4 md:w-16 md:flex-col md:justify-start md:space-x-0 md:space-y-4 md:border-b md:py-6">
-          <div>
+          <Link to="/">
             <img
               src={logo}
               alt="Sats Names"
@@ -51,7 +58,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <h1 className="hidden mt-1 text-sm font-bold leading-none text-center text-gray-700 md:block">
               Sats Names
             </h1>
-          </div>
+          </Link>
           <nav className="flex flex-row items-center justify-center space-x-3 md:flex-col md:space-y-2 md:space-x-0">
             {navData.map((navItem) => (
               <NavLink
@@ -78,7 +85,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </nav>
         </header>
         <main className="relative flex flex-col flex-grow w-full min-h-full py-4 md:ml-6 md:flex-grow-0 md:py-6">
-          {children}
+          <Outlet />
         </main>
       </div>
       <ResponsiveSizes />

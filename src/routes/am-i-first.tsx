@@ -1,3 +1,4 @@
+import { Field, Form, Formik } from "formik";
 import React from "react";
 import FirstCheckCard from "../components/first-check-card";
 import { fetchSatsName } from "../loaders/sats-names";
@@ -59,25 +60,30 @@ export default function AmIFirstPage() {
 
     console.log("values", values);
 
-    if (
-      !values
-      // values.get("sats_name") === "" ||
-      // formData.get("inscription_index") === ""
-    ) {
-      return setActionData({ error: "Fill all fields, please" });
+    if (!values.sats_name || !values.inscription_index) {
+      setActionData({
+        error: "Please fill all the form fields before submitting",
+      });
+      return;
     }
 
-    // const sats_name: string = formData.get("sats_name") as string;
-    // const inscription_index = parseInt(
-    //   formData.get("inscription_index") as string,
-    //   10
-    // );
-
-    const sats_name = "names.sats";
-    const inscription_index = 123456;
+    const sats_name = values.sats_name;
+    const inscription_index = parseInt(values.inscription_index, 10);
 
     const response = await fetchSatsName(sats_name as string);
+
+    console.log(response);
+    setLoading(false);
+
+    if (response.status === 500) {
+      setActionData({
+        error: "API is busy, wait abit.",
+      });
+      return;
+    }
+
     const data = await response.json();
+    console.log(data);
 
     if (data.error) {
       setActionData({ error: data.error });
@@ -90,44 +96,48 @@ export default function AmIFirstPage() {
 
   return (
     <div className="flex-grow w-full h-full p-6 space-y-6 bg-white rounded-xl">
-      <form
-        method="post"
-        className="flex flex-col space-y-6 sm:flex-row sm:space-x-2 sm:space-y-0"
+      <Formik
+        initialValues={{ sats_name: "", inscription_index: "" }}
+        onSubmit={handleSubmit}
       >
-        <label htmlFor="sats_name" className="w-full">
-          <span className="block mb-2 ml-2 text-xs font-bold text-gray-500 uppercase">
-            Sats Name
-          </span>
-          <input
-            id="sats_name"
-            name="sats_name"
-            type="text"
-            className="w-full rounded-lg"
-            placeholder="e.g. names.sats"
-          />
-        </label>
-        <label htmlFor="inscription_index" className="w-full">
-          <span className="block mb-2 ml-2 text-xs font-bold text-gray-500 uppercase">
-            Inscription Index
-          </span>
-          <input
-            id="inscription_index"
-            name="inscription_index"
-            type="text"
-            className="w-full rounded-lg"
-            placeholder="e.g. 162787"
-          />
-        </label>
-        <div className="w-full sm:pt-6">
-          <button
-            className="h-[42px] w-full min-w-[128px] rounded-lg bg-indigo-500 px-4 text-white md:px-6"
-            type="submit"
-            onClick={handleSubmit}
-          >
-            Submit
-          </button>
-        </div>
-      </form>
+        <Form
+          method="post"
+          className="flex flex-col space-y-6 sm:flex-row sm:space-x-2 sm:space-y-0"
+        >
+          <label htmlFor="sats_name" className="w-full">
+            <span className="block mb-2 ml-2 text-xs font-bold text-gray-500 uppercase">
+              Sats Name
+            </span>
+            <Field
+              id="sats_name"
+              name="sats_name"
+              type="text"
+              className="w-full rounded-lg"
+              placeholder="e.g. names.sats"
+            />
+          </label>
+          <label htmlFor="inscription_index" className="w-full">
+            <span className="block mb-2 ml-2 text-xs font-bold text-gray-500 uppercase">
+              Inscription Index
+            </span>
+            <Field
+              id="inscription_index"
+              name="inscription_index"
+              type="text"
+              className="w-full rounded-lg"
+              placeholder="e.g. 162787"
+            />
+          </label>
+          <div className="w-full sm:pt-6">
+            <button
+              className="h-[42px] w-full min-w-[128px] rounded-lg bg-indigo-500 px-4 text-white md:px-6"
+              type="submit"
+            >
+              Submit
+            </button>
+          </div>
+        </Form>
+      </Formik>
       {!loading && actionData && (
         <p className="mt-2 ml-1 text-sm text-red-500">{actionData.error}</p>
       )}
